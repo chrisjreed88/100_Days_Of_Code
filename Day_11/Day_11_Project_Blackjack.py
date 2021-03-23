@@ -34,12 +34,10 @@ def game():
 	dealer_blackjack = True if computer_score == 21 else False
 	while player_score < 21:
 		print(f"Your hand:")
-		for card in player_cards:
-			print(ascii_version_of_card(card))
+		print(ascii_version_of_card(*player_cards))
 		print(f"Total: {player_score}\n")
 		print(f"Computers hand:")
-		print(ascii_version_of_card(computer_cards[0]))
-		print(ascii_version_of_hidden_card(computer_cards[1]))
+		print(ascii_version_of_hidden_card(*computer_cards))
 		while True:
 			draw = input("Type 'y' to twist or 'n' to stick: ").lower()
 			if not draw in ["y", "n"]:
@@ -56,11 +54,9 @@ def game():
 			computer_cards.extend(deal_cards(1))
 			computer_score = get_score(computer_cards)
 	print(f"Your final hand:")
-	for card in player_cards:
-		print(ascii_version_of_card(card))
+	print(ascii_version_of_card(*player_cards))
 	print(f"Computer final hand:")
-	for card in computer_cards:
-		print(ascii_version_of_card(card))
+	print(ascii_version_of_card(*computer_cards))
 	print(f"Player Score: {player_score}")
 	print(f"Computer Score: {computer_score}")
 	if dealer_blackjack:
