@@ -17,8 +17,5 @@ while is_on:
     else:
         choice = menu.find_drink(user_input)
         if choice != None:
-            is_enough = money_machine.make_payment(choice.cost)
-            if is_enough:
-                enough_resources = coffe_maker.is_resource_sufficient(choice)
-                if enough_resources:
-                    coffe_maker.make_coffee(choice)
+            if money_machine.make_payment(choice.cost) and coffe_maker.is_resource_sufficient(choice):
+                coffe_maker.make_coffee(choice)
