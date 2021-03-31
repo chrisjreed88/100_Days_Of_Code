@@ -1,11 +1,13 @@
-from turtle import Turtle, Screen, colormode
+from turtle import Turtle, Screen
 from random import choice
 from colors import colors
 
 t = Turtle()
 s = Screen()
 t.pensize(10)
-colormode(255)
+t.hideturtle()
+t.speed(0)
+s.colormode(255)
 
 
 def draw_row():
@@ -16,7 +18,7 @@ def draw_row():
 
 
 t.penup()
-for n in range(-200, 200, 40):
+for n in range(-225, 275, 50):
     t.goto(-250, n)
     draw_row()
 
