@@ -5,9 +5,14 @@ from car_manager import CarManager
 from scoreboard import Scoreboard
 from random import randint
 
+difficulty = {"easy": 5, "medium": 20, "hard": 50}
+
 screen = Screen()
 screen.tracer(0)
 screen.setup(height=600, width=600)
+diff = screen.textinput(
+    "Choose Difficulty", "Which difficulty do you want? easy, medium or hard"
+)
 player = Player()
 level = Scoreboard()
 cars = CarManager()
@@ -18,7 +23,7 @@ screen.onkey(player.move_forward, "Up")
 game_is_on = True
 while game_is_on:
     time.sleep(cars.car_speed)
-    if randint(1, 100) < 20:
+    if randint(1, 100) < difficulty[diff]:
         cars.generate_car()
     cars.move()
     for car in cars.cars:
