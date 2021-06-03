@@ -10,15 +10,16 @@ screen.setup(height=491, width=725)
 screen.title("U.S. States Game")
 screen.bgpic("blank_states_img.gif")
 
-game_is_on = True
-while game_is_on:
-    guess = screen.textinput(
-        title=f"{game.score}/50 states correct", prompt="Guess a State")
+while game.score < 50:
+    try:
+        guess = screen.textinput(
+            title=f"{game.score}/50 states correct", prompt="Guess a State").title()
+    except AttributeError:
+        continue
+    if guess == "Exit":
+        game.generate_states_to_learn_csv()
+        break
     state_coords = game.take_guess(guess)
     if state_coords:
         turtle.goto(state_coords)
         turtle.write(guess)
-    else:
-        game_is_on = False
-
-screen.exitonclick()
