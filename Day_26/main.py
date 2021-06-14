@@ -1,32 +1,7 @@
-nato_alphabet = {
-    'a': "Alpha",
-    'b': "Bravo",
-    'c': "Charlie",
-    'd': "Delta",
-    'e': "Echo",
-    'f': "Foxtrot",
-    'g': "Golf",
-    'h': "Hotel",
-    'i': "India",
-    'j': "Juliet",
-    'k': "Kilo",
-    'l': "Lima",
-    'm': "Mike",
-    'n': "November",
-    'o': "Oscar",
-    'p': "Papa",
-    'q': "Quebec",
-    'r': "Romeo",
-    's': "Sierra",
-    't': "Tango",
-    'u': "Uniform",
-    'v': "Victor",
-    'w': "Whisky",
-    'x': "XRay",
-    'y': "Yankee",
-    'z': "Zulu"
-}
+import pandas as pd
 
-word = input("Enter a word: ").lower()
-nato_word = [nato_alphabet[char] for char in word]
+df = pd.read_csv("nato_phonetic_alphabet.csv")
+nato_dict = {row.letter: row.code for index, row in df.iterrows()}
+word = input("Enter a word: ").upper()
+nato_word = [nato_dict[char] for char in word]
 print(nato_word)
