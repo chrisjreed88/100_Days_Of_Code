@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter.messagebox import askokcancel, askquestion, showerror, showinfo, showwarning
 from random import choice, randint, shuffle
 import pyperclip
+import json
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
 
@@ -31,31 +32,59 @@ def save_data():
         showwarning(
             title="Oops", message="Please don't leave any fields blank!")
     else:
+        new_data = {
+            website: {
+                "email": email,
+                "password": password
+            }
+        }
         if askokcancel(title=website, message=f"Details to be saved:\n\nEmail: {email}\nPassword: {password}\n\nIs this correct?"):
-            with open("password_data.txt", "r") as f:
-                data = f.readlines()
-                exists = False
-                for index, line in enumerate(data):
-                    if website in line:
+            exists = False
+            changed = False
+            try:
+                with open("password_data.json", "r") as f:
+                    data = json.load(f)
+                    if website in data:
                         exists = True
-                        line_index = index
-                        break
-            if exists:
-                if askquestion(title="Exists", message=f"An entry for {website} already exists,\nDo you want to replace it?") == "yes":
-                    data[line_index] = f"{website} | {email} | {password}\n"
-                    with open("password_data.txt", "w") as f:
-                        for line in data:
-                            f.write(line)
-                    website_entry.delete(0, END)
-                    password_entry.delete(0, END)
-                    showinfo(title="Changed",
-                             message="Your password has been changed!")
+            except FileNotFoundError:
+                data = new_data
             else:
-                with open("password_data.txt", "a") as f:
-                    f.write(f"{website} | {email} | {password}\n")
+                if exists:
+                    if askquestion(title="Exists", message=f"An entry for {website} already exists,\nDo you want to replace it?") == "yes":
+                        data[website]["password"] = password
+                        changed = True
+                else:
+                    data.update(new_data)
+            finally:
+                with open("password_data.json", "w") as f:
+                    json.dump(data, f, indent=4)
                 website_entry.delete(0, END)
                 password_entry.delete(0, END)
-                showinfo(title="Saved", message="Your password has been saved!")
+                if changed:
+                    showinfo(title="Changed",
+                             message="Your password has been changed!")
+                else:
+                    showinfo(title="Saved",
+                             message="Your password has been saved!")
+
+
+# ---------------------------- SEARCH DATABASE ------------------------------- #
+
+def search():
+    website = website_entry.get()
+    if len(website) > 0:
+        with open("password_data.json", "r") as f:
+            data = json.load(f)
+        try:
+            email = data[website]["email"]
+            password = data[website]["password"]
+        except KeyError:
+            message = f"Entry for {website} not found!"
+        else:
+            message = f"Email: {data[website]['email']}\nPassword: {data[website]['password']}"
+            pyperclip.copy(password)
+        finally:
+            showinfo(title=website, message=message)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -85,17 +114,19 @@ password_entry = Entry()
 # Buttons
 generate_button = Button(text="Generate Password", command=generate_password)
 add_button = Button(text="Add", command=save_data)
+search_button = Button(text="Search", command=search)
 
 # Add to grid
 canvas.grid(column=1, row=0)
 website_label.grid(column=0, row=1)
 email_label.grid(column=0, row=2)
 password_label.grid(column=0, row=3)
-website_entry.grid(column=1, row=1, columnspan=2, sticky="ew")
+website_entry.grid(column=1, row=1, sticky="ew")
 email_entry.grid(column=1, row=2, columnspan=2, sticky="ew")
 password_entry.grid(column=1, row=3, sticky="ew")
 generate_button.grid(column=2, row=3, sticky="ew")
 add_button.grid(column=1, row=4, columnspan=2, sticky="ew")
+search_button.grid(column=2, row=1, sticky="ew")
 
 
 window.mainloop()
