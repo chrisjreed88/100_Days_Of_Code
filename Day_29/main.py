@@ -1,14 +1,47 @@
 from tkinter import *
-from tkinter.messagebox import askokcancel, askquestion, showerror, showinfo, showwarning
+from tkinter.messagebox import (
+    askokcancel,
+    askquestion,
+    showerror,
+    showinfo,
+    showwarning,
+)
 from random import choice, randint, shuffle
 import pyperclip
 import json
+
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
 
 def generate_password():
-    letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
-               "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+    letters = [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+    ]
     letters.extend([l.upper() for l in letters])
     numbers = [str(n) for n in range(10)]
     symbols = ["!", "#", "$", "%", "&", "(", ")", "*", "+"]
@@ -21,6 +54,7 @@ def generate_password():
     password_entry.insert(END, string=new_password)
     pyperclip.copy(new_password)
 
+
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
 
@@ -29,16 +63,13 @@ def save_data():
     email = email_entry.get()
     password = password_entry.get()
     if len(website) < 1 or len(password) < 1:
-        showwarning(
-            title="Oops", message="Please don't leave any fields blank!")
+        showwarning(title="Oops", message="Please don't leave any fields blank!")
     else:
-        new_data = {
-            website: {
-                "email": email,
-                "password": password
-            }
-        }
-        if askokcancel(title=website, message=f"Details to be saved:\n\nEmail: {email}\nPassword: {password}\n\nIs this correct?"):
+        new_data = {website: {"email": email, "password": password}}
+        if askokcancel(
+            title=website,
+            message=f"Details to be saved:\n\nEmail: {email}\nPassword: {password}\n\nIs this correct?",
+        ):
             exists = False
             changed = False
             try:
@@ -50,7 +81,13 @@ def save_data():
                 data = new_data
             else:
                 if exists:
-                    if askquestion(title="Exists", message=f"An entry for {website} already exists,\nDo you want to replace it?") == "yes":
+                    if (
+                        askquestion(
+                            title="Exists",
+                            message=f"An entry for {website} already exists,\nDo you want to replace it?",
+                        )
+                        == "yes"
+                    ):
                         data[website]["password"] = password
                         changed = True
                 else:
@@ -61,14 +98,15 @@ def save_data():
                 website_entry.delete(0, END)
                 password_entry.delete(0, END)
                 if changed:
-                    showinfo(title="Changed",
-                             message="Your password has been changed!")
+                    showinfo(title="Changed", message="Your password has been changed!")
+                elif not changed and exists:
+                    pass
                 else:
-                    showinfo(title="Saved",
-                             message="Your password has been saved!")
+                    showinfo(title="Saved", message="Your password has been saved!")
 
 
 # ---------------------------- SEARCH DATABASE ------------------------------- #
+
 
 def search():
     website = website_entry.get()
